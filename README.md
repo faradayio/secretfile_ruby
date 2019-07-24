@@ -1,8 +1,37 @@
 # Secretfile
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/secretfile`. To experiment with that code, run `bin/console` for an interactive prompt.
+A standard way to bring secrets into your app.
 
-TODO: Delete this and the text above, and describe your gem
+```
+# Secretfile
+SECRET1 not/in/vault:set_in_env
+SECRET2 secret/test:value
+SECRET3 not/in/vault:expected_to_raise
+```
+
+Depends on [Hashicorp Vault](https://www.vaultproject.io/). Used in production at [Faraday](https://www.faraday.io).
+
+## Differences from `secret_garden`
+
+The initial implementation of Secretfile in ruby was [`secret_garden`](https://github.com/erithmetic/secret_garden).
+
+<Table>
+  <tr>
+    <th>What</th>
+    <th><code>secret_garden</code> (other gem)</th>
+    <th><code>secretfile</code> (this gem)</th>
+  </tr>
+  <tr>
+    <td>Caches secrets in memory?</td>
+    <td>Yes - an instance variable held secrets gotten from Vault, etc.</td>
+    <td>No - always checks ENV and then calls out to vault.</td>
+  </tr>
+  <tr>
+    <td>Configurable backends?</td>
+    <td>Yes - you <code>require 'secret_garden/vault'</code> etc.</td>
+    <td>No - you only get vault, and it's required by default</td>
+  </tr>
+</Table>
 
 ## Installation
 
@@ -22,7 +51,17 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+In your Secretfile:
+
+```
+DATABASE_URL secrets/$VAULT_ENV/database:url
+```
+
+Then you call
+
+```
+Secretfile.get('DATABASE_URL') # looks for ENV['DATABASE_URL'], falling back to secrets/$VAULT_ENV/database:url
+```
 
 ## Development
 
@@ -32,7 +71,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/secretfile. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/faradayio/secretfile_ruby. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
@@ -40,4 +79,14 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the Secretfile project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/secretfile/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the Secretfile project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/faradayio/secretfile_ruby/blob/master/CODE_OF_CONDUCT.md).
+
+## Sponsor
+
+<p><a href="https://www.faraday.io"><img src="https://s3.amazonaws.com/faraday-assets/files/img/logo.svg" alt="Faraday logo"/></a></p>
+
+We use `secretfile` for [B2C customer lifecycle optimization at Faraday](https://www.faraday.io).
+
+## Copyright
+
+Copyright 2019 Faraday

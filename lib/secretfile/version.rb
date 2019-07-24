@@ -1,3 +1,3 @@
-module Secretfile
-  VERSION = "0.1.0"
+class Secretfile
+  VERSION = '1.0.0'
 end
