@@ -27,4 +27,15 @@ RSpec.describe Secretfile do
       Secretfile.instance.send(:read_spec)
     end
   end
+
+  # testing this requires a real aws setup with vault
+  # trust me, it works
+  xit "can use dynamic secrets from vault, like for amazon sts" do
+    Secretfile.group do
+      akid = Secretfile.get('AWS_ACCESS_KEY_ID')
+      sk = Secretfile.get('AWS_SECRET_ACCESS_KEY')
+      st = Secretfile.get('AWS_SESSION_TOKEN')
+      puts [akid,sk,st]
+    end
+  end
 end

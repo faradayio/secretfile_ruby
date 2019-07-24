@@ -10,9 +10,19 @@ class Secretfile
     def get(k)
       instance.get k
     end
+
+    def group
+      begin
+        instance.group ||= {}
+        yield
+      ensure
+        instance.group = nil
+      end
+    end
   end
 
   attr_reader :spec
+  attr_accessor :group
 
   def initialize
     super # singleton magic i guess
@@ -28,7 +38,13 @@ class Secretfile
       ENV[k]
     else
       path, field = spec.fetch k
-      payload = Vault.logical.read(path) or raise("Secret #{k.inspect} not found in Vault at #{path}")
+      payload = if group&.has_key?(path)
+        group[path]
+      else
+        memo = Vault.logical.read(path) or raise("Secret #{k.inspect} not found in Vault at #{path}")
+        group[path] = memo if group
+        memo
+      end
       payload.data[field.to_sym] or raise("Secret #{k.inspect} not found in Vault at #{path}:#{field}")
     end
   end
@@ -39,7 +55,7 @@ class Secretfile
     ENV.fetch('SECRETFILE_PATH', 'Secretfile')
   end
 
-  VALID_LINE = /\A\w+\s+[\w\/]+:\w+\z/
+  VALID_LINE = /\A\w+\s+[\w\-\/]+:\w+\z/
   def read_spec
     raise "Expected Secretfile" unless File.readable?(spec_path)
     @spec = IO.readlines(spec_path).inject({}) do |memo, line|

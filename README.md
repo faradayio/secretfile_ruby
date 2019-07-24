@@ -31,6 +31,11 @@ The initial implementation of Secretfile in ruby was [`secret_garden`](https://g
     <td>Yes - you <code>require 'secret_garden/vault'</code> etc.</td>
     <td>No - you only get vault, and it's required by default</td>
   </tr>
+  <tr>
+    <td>Supports dynamic vault secrets (e.g. Amazon STS)?</td>
+    <td>No - they are never refreshed</td>
+    <td>Yes - they are pulled together, but not cached. Use <code>Secretfile.group { Secretfile.get(x); Secretfile.get(y) }</code>.</td>
+  </tr>
 </Table>
 
 ## Installation
@@ -55,12 +60,25 @@ In your Secretfile:
 
 ```
 DATABASE_URL secrets/$VAULT_ENV/database:url
+AWS_ACCESS_KEY_ID aws/sts/myrole:access_key
+AWS_SECRET_ACCESS_KEY aws/sts/myrole:secret_key
+AWS_SESSION_TOKEN aws/sts/myrole:security_token
 ```
 
 Then you call
 
 ```
 Secretfile.get('DATABASE_URL') # looks for ENV['DATABASE_URL'], falling back to secrets/$VAULT_ENV/database:url
+```
+
+To use dynamic creds like [Amazon STS](https://docs.aws.amazon.com/STS/latest/APIReference/Welcome.html) with the [Vault AWS Secrets engine](https://www.vaultproject.io/docs/secrets/aws/index.html), do this:
+
+```
+Secretfile.group do
+  akid = Secretfile.get('AWS_ACCESS_KEY_ID')
+  sk = Secretfile.get('AWS_SECRET_ACCESS_KEY')
+  st = Secretfile.get('AWS_SESSION_TOKEN')
+end
 ```
 
 ## Development
