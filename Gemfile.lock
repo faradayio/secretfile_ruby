@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    secretfile (1.0.0)
+    secretfile (1.0.1)
       vault
 
 GEM

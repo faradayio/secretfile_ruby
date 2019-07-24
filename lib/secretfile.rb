@@ -13,7 +13,10 @@ class Secretfile
 
     def group
       begin
-        instance.group ||= {}
+        instance.mutex.synchronize do
+          raise "Can't nest Secretfile.group" if instance.group
+          instance.group = {}
+        end
         yield
       ensure
         instance.group = nil
@@ -22,10 +25,12 @@ class Secretfile
   end
 
   attr_reader :spec
+  attr_reader :mutex
   attr_accessor :group
 
   def initialize
     super # singleton magic i guess
+    @mutex = Mutex.new
     read_spec
   end
 

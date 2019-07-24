@@ -38,4 +38,8 @@ RSpec.describe Secretfile do
       puts [akid,sk,st]
     end
   end
+
+  it "raises if you nest group" do
+    expect{Secretfile.group{Secretfile.group{'hello'}}}.to raise_error(/can't nest/i)
+  end
 end
