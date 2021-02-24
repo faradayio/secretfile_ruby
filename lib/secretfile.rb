@@ -65,7 +65,7 @@ class Secretfile
     raise "Expected Secretfile" unless File.readable?(spec_path)
     @spec = IO.readlines(spec_path).inject({}) do |memo, line|
       line.chomp!
-      next memo if line == ""
+      next memo if line =~ /\A\s*\z/
       next memo if line =~ /\A\s*#/
       line.gsub!(/\$(\{)?([A-Z0-9_]+)(\})?/) do
         if $1 == '{' and $3 != '}'
