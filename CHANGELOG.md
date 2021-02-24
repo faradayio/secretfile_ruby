@@ -1,3 +1,9 @@
+1.0.3 / 2021-02-24
+
+* Bug fixes
+
+  * Allow blank lines in Secretfiles
+
 1.0.2 / 2019-07-24
 
 * Enhancements
