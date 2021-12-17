@@ -62,7 +62,6 @@ class Secretfile
 
   VALID_LINE = /\A\w+\s+[\w\-\/]+:\w+\z/
   def read_spec
-    raise "Expected Secretfile" unless File.readable?(spec_path)
     @spec = IO.readlines(spec_path).inject({}) do |memo, line|
       line.chomp!
       next memo if line =~ /\A\s*\z/

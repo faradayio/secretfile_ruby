@@ -1,3 +1,9 @@
+1.0.4 / 2021-12-17
+
+* Enhancements
+
+  * Don't hide fs error if Secretfile not readable
+
 1.0.3 / 2021-02-24
 
 * Bug fixes
